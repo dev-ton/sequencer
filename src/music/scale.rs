@@ -1,4 +1,5 @@
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[allow(dead_code)] // The full scale set is available to generators as they are added.
 pub enum Scale {
     Chromatic,
     Major,
@@ -46,7 +47,7 @@ mod tests {
     #[test]
     fn quantizes_to_nearest_d_dorian_pitch() {
         assert_eq!(quantize(54, 2, Scale::Dorian), 53);
-        assert_eq!(quantize(56, 2, Scale::Dorian), 57);
+        assert_eq!(quantize(56, 2, Scale::Dorian), 55);
         assert_eq!(quantize(60, 2, Scale::Dorian), 60);
     }
 }

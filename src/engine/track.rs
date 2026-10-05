@@ -45,11 +45,4 @@ impl Track {
             .note
             .filter(|_| passes_probability(&mut self.rng, self.probability))
     }
-
-    pub fn reset(&mut self, seed: u64, id: u64) {
-        self.step = 0;
-        self.generator
-            .reset(seed ^ id.wrapping_mul(0x9E3779B97F4A7C15));
-        self.rng = track_rng(seed, id);
-    }
 }

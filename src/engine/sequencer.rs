@@ -14,7 +14,6 @@ use crate::{
 #[derive(Debug)]
 pub enum Command {
     Toggle,
-    Stop,
     SetBpm(u16),
     ToggleMute(usize),
     Reseed(u64),
@@ -95,16 +94,16 @@ fn run(output: &mut Output, commands: Receiver<Command>, status: Sender<String>)
                 running = !running;
                 if running {
                     next_tick = Instant::now();
-                    let _ = status.send("RUNNING".into());
+                    let names = tracks
+                        .iter()
+                        .map(|track| track.name.as_str())
+                        .collect::<Vec<_>>()
+                        .join(", ");
+                    let _ = status.send(format!("RUNNING · {names}"));
                 } else {
                     cleanup(output, &mut active);
                     let _ = status.send("STOPPED".into());
                 }
-            }
-            Ok(Command::Stop) => {
-                running = false;
-                cleanup(output, &mut active);
-                let _ = status.send("STOPPED".into());
             }
             Ok(Command::SetBpm(value)) => bpm = value.clamp(30, 300),
             Ok(Command::ToggleMute(index)) => {

@@ -12,7 +12,6 @@ pub struct GeneratorContext {
 
 pub trait Generator: Send {
     fn next(&mut self, context: &GeneratorContext) -> GeneratedStep;
-    fn reset(&mut self, seed: u64);
 }
 
 pub struct Sequence {
@@ -32,14 +31,10 @@ impl Generator for Sequence {
         }
         GeneratedStep { note }
     }
-    fn reset(&mut self, _: u64) {
-        self.position = 0;
-    }
 }
 
 pub struct RandomWalk {
     note: i16,
-    start: i16,
     root: u8,
     scale: Scale,
     rng: ChaCha8Rng,
@@ -48,7 +43,6 @@ impl RandomWalk {
     pub fn new(start: u8, root: u8, scale: Scale, seed: u64) -> Self {
         Self {
             note: start as i16,
-            start: start as i16,
             root,
             scale,
             rng: ChaCha8Rng::seed_from_u64(seed),
@@ -61,10 +55,6 @@ impl Generator for RandomWalk {
         let note = quantize(self.note as u8, self.root, self.scale);
         self.note = note as i16;
         GeneratedStep { note: Some(note) }
-    }
-    fn reset(&mut self, seed: u64) {
-        self.note = self.start;
-        self.rng = ChaCha8Rng::seed_from_u64(seed);
     }
 }
 
@@ -104,7 +94,6 @@ impl Generator for Euclidean {
         };
         GeneratedStep { note }
     }
-    fn reset(&mut self, _: u64) {}
 }
 
 pub fn passes_probability(rng: &mut ChaCha8Rng, probability: f64) -> bool {
