@@ -189,15 +189,9 @@ pub fn run(output: Output) -> Result<()> {
                         adjust_selected(&sequencer, &snapshot, selected_track, selected_control, 1)
                     }
                     KeyCode::Char('x') | KeyCode::Char('X') => {
-                        if let Some(control) =
-                            selected_parameter(&snapshot, selected_track, selected_control).filter(
-                                |control| {
-                                    matches!(
-                                        control,
-                                        TrackControl::Generator(GeneratorControl::SequenceNote(_))
-                                    )
-                                },
-                            )
+                        if let Some(
+                            control @ TrackControl::Generator(GeneratorControl::SequenceNote(_)),
+                        ) = selected_parameter(&snapshot, selected_track, selected_control)
                         {
                             let _ = sequencer.tx.send(Command::ToggleRest {
                                 index: selected_track,
