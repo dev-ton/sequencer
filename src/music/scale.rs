@@ -1,5 +1,4 @@
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-#[allow(dead_code)] // The full scale set is available to generators as they are added.
 pub enum Scale {
     Chromatic,
     Major,
@@ -11,6 +10,28 @@ pub enum Scale {
 }
 
 impl Scale {
+    pub const ALL: [Self; 7] = [
+        Self::Chromatic,
+        Self::Major,
+        Self::NaturalMinor,
+        Self::Dorian,
+        Self::Phrygian,
+        Self::Lydian,
+        Self::Mixolydian,
+    ];
+
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::Chromatic => "Chromatic",
+            Self::Major => "Major",
+            Self::NaturalMinor => "Natural minor",
+            Self::Dorian => "Dorian",
+            Self::Phrygian => "Phrygian",
+            Self::Lydian => "Lydian",
+            Self::Mixolydian => "Mixolydian",
+        }
+    }
+
     pub fn intervals(self) -> &'static [u8] {
         match self {
             Self::Chromatic => &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
